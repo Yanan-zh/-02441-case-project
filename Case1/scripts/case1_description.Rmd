@@ -1,0 +1,38 @@
+---
+title: "case1"
+author: "yanan zhao"
+date: "2023-01-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(xtable)
+
+```
+
+
+
+#load data
+```{r}
+SPR = read.csv('case1/SPR.txt',header = TRUE, sep = '\t')
+str(SPR)
+
+name = c("RunDate", "Enzyme", "DetStock", "CaStock")
+SPR[name] = lapply(SPR[name], factor) 
+
+```
+
+#summary 
+```{r}
+summary(SPR)
+print(xtable(summary(SPR), type="html", file="xt.html", include.rownames=FALSE))
+      
+```
+```{r}
+
+```
+
