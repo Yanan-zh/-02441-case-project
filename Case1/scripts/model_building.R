@@ -33,3 +33,21 @@ par(mfrow=c(2,2))
 plot(lm4)
 
 # Model selection (backwards)
+# Reduce lm3
+step(lm3)
+lm_5 <- lm(formula = sqrtResponse ~ EnzymeConc + Enzyme + DetStock + 
+                 CaStock + EnzymeConc:Enzyme + Enzyme:DetStock + EnzymeConc:CaStock, 
+               data = data)
+summary(lm_5)
+drop1(lm_5)
+
+lm_6 <- update(lm_5, ~ . -EnzymeConc:CaStock)
+summary(lm_6)
+drop1(lm_6, test = "F")
+
+lm_7 <- update(lm_6, ~ . -CaStock)
+summary(lm_7)
+drop1(lm_7, test = "F")
+
+par(mfrow = c(2,2))
+plot(lm_7)
