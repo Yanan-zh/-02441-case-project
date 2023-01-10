@@ -38,7 +38,7 @@ sub_backtransform <- function(){
                            "CaStock" = rep(c("Ca+", "Ca0"), each = 500),
                            "new_EnzymeConc" = seq(min(data_sub$new_EnzymeConc), max(data_sub$new_EnzymeConc), length = 500))
     new.data$EnzymeConc = new.data$new_EnzymeConc * new.data$new_EnzymeConc
-    pred.int <- predict(lm4.5, new.data, interval = "predictions")
+    pred.int <- predict(lm4.5, new.data, interval = "prediction")
     pred.int <- pred.int^2
     # sort.fit <- pred.int[,1] %>% sort()
     
