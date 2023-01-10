@@ -101,18 +101,23 @@ lm4.2 = update(lm4.1, ~. -new_EnzymeConc:Enzyme:CaStock-new_EnzymeConc:DetStock:
 drop1(lm4.2,test = 'F')
 Anova(lm4.2)
 
-lm4.3 = update(lm4.2, ~. -new_EnzymeConc:DetStock-)
+lm4.3 = update(lm4.2, ~. -new_EnzymeConc:DetStock)
 drop1(lm4.3,test = 'F')
 Anova(lm4.3)
 
-lm4.4 = update(lm4.3, ~. -new_EnzymeConc:DetStock-DetStock:CaStock)
+lm4.4 = update(lm4.3, ~. -DetStock:CaStock)
 drop1(lm4.4,test = 'F')
 Anova(lm4.4)
 
-shapiro.test(lm4.4$residuals)
+lm4.5 = update(lm4.4, ~. -Enzyme:CaStock)
+drop1(lm4.5,test = 'F')
+Anova(lm4.5)
+
+
+shapiro.test(lm4.5$residuals)
 
 bc = boxCox(lm4.4, lambda = seq(0,2,0.05))
-lambda= bc$x[ which.max(bc$y) ]
+lambda= bc$x[ which.max(bc$y)]
 
 par(mfrow=c(2,2))
 plot(lm4.4)
