@@ -2,28 +2,16 @@
 library(tidyverse); library(ggpubr); library(car)
 
 # Data loading
-
-data <- read.csv("Case1/SPR.txt", sep="")
+data <- read.csv("Case1/scripts/SPR.txt", sep="")
 data$Enzyme = as.factor(data$Enzyme)
 data$DetStock = as.factor(data$DetStock)
 data$CaStock = as.factor(data$CaStock)
 data$EnzymeConc = as.factor(data$EnzymeConc)
 data$sqrtResponse = sqrt(data$Response)
 str(data)
-pairs(data)
 
 
 # Visualisation
-
-x <- data$mat.height
-hist1 <- hist(x, freq = FALSE, breaks = 4, main = "Histogram of mat.height")
-x_range <- seq(min(x), max(x), length.out = 100)
-lines(x_range, dnorm(x_range, mean(x), sd(x)), lw = 3, col = "red")
-plot(ecdf(x), main = "ecdf(mat.height)")
-lines(x_range, pnorm(x_range, mean(x), sd(x)), lw = 3, col = "red")
-abline(v=hist1$breaks)
-qqnorm(x); qqline(x)
-
 normal_plot <- function(col){
   par(mfrow=c(1,3))
   x <- c(unlist(data[col]))
@@ -38,8 +26,6 @@ normal_plot <- function(col){
 data$Response2 = sqrt(data$Response)
 normal_plot("Response2")
 shapiro.test(data$Response2)
-x <- c(unlist(data["Response"]))
-normal_plot("EnzymeConc")
 
 # library(MESS)
 # qqwrap <- function(x, y, ...){
@@ -47,26 +33,6 @@ normal_plot("EnzymeConc")
 #   qqnorm(stdy, main="", ...)
 #   qqline(stdy)}
 # wallyplot(data$Response2, FUN=qqwrap, ylim=c(-3,3))
-
-colours <- c("red", "blue", "green", "black")[unclass(data$EnzymeConc)]
-c("red", as.numeric(data$EnzymeConc))
-colours
-colours
-pairs(data, bg = "red")
-pairs(data, col = as.numeric(data$DetStock))
-unique(sort(data$Cycle))
-par(mfrow=c(1,3))
-col <- "Response"
-unique(data$CaStock)
-data$Response[data$CaStock == "Ca0"]
-x <- data$Response[data$CaStock == "Ca+"]
-hist1 <- hist(x, freq = FALSE, breaks = 8, main = paste("Histogram of", col))
-x_range <- seq(min(x), max(x), length.out = 100)
-lines(x_range, dnorm(x_range, mean(x), sd(x)), lw = 3, col = "red")
-plot(ecdf(x), main = paste0("ecdf(", col, ")"))
-lines(x_range, pnorm(x_range, mean(x), sd(x)), lw = 3, col = "red")
-abline(v=hist1$breaks)
-qqnorm(x); qqline(x)
 
 # Histogram of Response for dif. CaStock
 par(mfrow=c(1,2))
@@ -154,6 +120,17 @@ data %>%
   geom_boxplot() +
   theme_minimal()
 
+# Enzyme type
+data %>%
+  filter(CaStock == "Ca0") %>% 
+  ggplot(mapping = aes(x = Enzyme,
+                       y = Response,
+                       fill = Enzyme)) +
+  geom_boxplot() +
+  theme_minimal() +
+  geom_pwc()
+
+
 
 library(MESS)
 qqwrap <- function(x, y, ...){
@@ -176,11 +153,12 @@ lm_enzyme2 <- lm(Response ~ factEnzymeConc, data)
 summary(lm_enzyme2)
 plot(lm_enzyme2)
 data %>%
-  ggplot(mapping = aes(x = factEnzymeConc,
+  ggplot(mapping = aes(x = as.factor(EnzymeConc),
                        y = Response,
-                       fill = factEnzymeConc)) +
+                       fill = as.factor(EnzymeConc))) +
   geom_boxplot() +
-  stat_compare_means()
+  stat_compare_means() +
+  geom_pwc()
 kruskal.test(Response ~ EnzymeConc, data)
 4*(4-1)/2
 0.05/6
