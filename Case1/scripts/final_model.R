@@ -120,5 +120,5 @@ bc = boxCox(lm4.5, lambda = seq(0,2,0.05))
 lambda= bc$x[ which.max(bc$y)]
 
 par(mfrow=c(2,2))
-plot(lm4.4)
+plot(lm4.5)
 
