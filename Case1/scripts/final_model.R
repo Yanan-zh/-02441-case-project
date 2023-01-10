@@ -116,7 +116,7 @@ Anova(lm4.5)
 
 shapiro.test(lm4.5$residuals)
 
-bc = boxCox(lm4.4, lambda = seq(0,2,0.05))
+bc = boxCox(lm4.5, lambda = seq(0,2,0.05))
 lambda= bc$x[ which.max(bc$y)]
 
 par(mfrow=c(2,2))
