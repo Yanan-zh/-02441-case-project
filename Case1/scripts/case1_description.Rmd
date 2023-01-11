@@ -11,14 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(xtable)
-
+library(ggplot2)
 ```
 
 
 
 #load data
 ```{r}
-SPR = read.csv('case1/SPR.txt',header = TRUE, sep = '\t')
+SPR = read.csv('SPR.txt',header = TRUE, sep = '\t')
 str(SPR)
 
 name = c("RunDate", "Enzyme", "DetStock", "CaStock")
@@ -30,9 +30,83 @@ SPR[name] = lapply(SPR[name], factor)
 ```{r}
 summary(SPR)
 print(xtable(summary(SPR), type="html", file="xt.html", include.rownames=FALSE))
+
+
+print(xtable(Anova(lm4.5), type="html", file="xt.html", include.rownames=FALSE))
+
+print(xtable(summary(lm4.5), type="html", file="xt.html", include.rownames=FALSE))
+
+
       
 ```
+
 ```{r}
 
+ggplot(data = data,mapping =aes(Enzyme, Response, fill=as.factor( EnzymeConc)))+
+  geom_boxplot()+ guides(fill=guide_legend(title="EnzymeConc"))+ theme_classic()+ stat
+  
+
+ggplot(data = data,mapping= aes(DetStock,Response,fill=DetStock))+
+  geom_boxplot()+ theme_classic()+
+  stat_compare_means()
+
+
+ggplot(data = data,mapping =aes(CaStock ,Response,fill=CaStock))+
+  geom_boxplot()+theme_classic()+ stat_compare_means()
+
+```
+
+```{r}
+
+cbPalette <- c( "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+panel.hist <- function(x, i, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+
+    ################################################
+    #Edited next line, 27th November 2017 by Kevin Blighe
+    #Now colouring each histogram based on WGCNA module names
+    ################################################
+    rect(breaks[-nB], 0, breaks[-1], y)
+    
+}
+
+png("highres.png", units = "in", width = 10, height = 7, res = 300)
+pairs(SPR[-1], pch=as.numeric(SPR$DetStock)+15, col=SPR$EnzymeConc, diag.panel=panel.hist, lower.panel = panel.smooth)
+dev.off()
+save('pairsplot.png')
+```
+
+```{r}
+### HOW TO USE
+# Add the next body to your script and run the chunk:
+normalitycheck <- function(sample,x,name){ 
+  #sample is your data vector
+  #x is number of bins in histogram (uninformative if you have few observations)
+  #name is the name of the data, which will appear in the plottitles
+  
+  library(car)
+  par(mfrow = c(2, 2))
+  qqPlot(sample,ylab="sample quantiles",main=paste("QQ-plot for",name))
+  hist(sample,nclass=x,main=paste("Histogram of",name),xlab="value")
+  plot(ecdf(sample),verticals=TRUE,main=paste("Theoretical and sample CDF of",name))
+  xline <- seq(0.9*min(sample), 1.1*max(sample), length.out = 100)
+  lines(xline, pnorm(xline, mean(sample), sd(sample)))
+}
+
+normalitycheck(sqrt(SPR$Response),6,'see')
+
+```
+
+
+
+
+```{r}
+table(SPR$Cycle,SPR$Enzyme)
 ```
 

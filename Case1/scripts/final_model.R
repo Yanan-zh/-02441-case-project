@@ -28,11 +28,19 @@ shapiro.test(lm1$residuals)# residue not normally distributed
 
 
 #box cox transform y and x
+
 bc1 = boxCox(lm1, lambda = seq(0,1,0.05))
 bc1$x[ which.max(bc1$y) ]
-# lamada = 4545455, near 0.5 so squre root
+# lamada = 0.4545455, near 0.5 so squre root
 
 data$new_response <- sqrt(data$Response)
+
+lm1.1 = lm(new_response ~ EnzymeConc*Enzyme*DetStock*CaStock, data)
+
+par(mfrow=c(1,1))
+bc2 = boxCox(lm1.1, lambda = seq(0,2,0.05))
+bc2$x[ which.max(bc2$y) ]
+
 
 
 data$EnzymeConc[data$EnzymeConc==0.0] <- data$EnzymeConc[data$EnzymeConc==0.0]+0.000001
@@ -57,13 +65,14 @@ plot(sqrt(data$EnzymeConc) ~ data$new_response,col="green")
 
 
 # try make max model again
-lm2 = lm(new_response ~ new_EnzymeConc*Enzyme*DetStock*CaStock+Cycle, data)
+lm2 = lm(new_response ~ new_EnzymeConc*Enzyme*DetStock*CaStock, data)
 summary(lm2)
 step(lm2)
 lm2.1 = lm(formula = new_response ~ new_EnzymeConc + Enzyme + DetStock + 
              CaStock + new_EnzymeConc:Enzyme + new_EnzymeConc:DetStock + 
              Enzyme:DetStock + new_EnzymeConc:CaStock + DetStock:CaStock + 
              new_EnzymeConc:DetStock:CaStock, data = data)
+
 summary(lm2.1)
 Anova(lm2.1)
 drop1(lm2.1,test = 'F')
@@ -90,11 +99,17 @@ data_remove2 = data[-c(147,160),] # remove outlier
 lm4 = lm(new_response ~ new_EnzymeConc*Enzyme*DetStock*CaStock, data_remove2)
 summary(lm4)
 step(lm4)
+
+step(lm4,k=log(length(data_remove2)))
+
+
 lm4.1 = lm(formula = new_response ~ new_EnzymeConc + Enzyme + DetStock + 
              CaStock + new_EnzymeConc:Enzyme + new_EnzymeConc:DetStock + 
              Enzyme:DetStock + new_EnzymeConc:CaStock + Enzyme:CaStock + 
              DetStock:CaStock + new_EnzymeConc:Enzyme:CaStock + new_EnzymeConc:DetStock:CaStock, 
            data = data_remove2)
+
+
 drop1(lm4.1,test = 'F')
 
 lm4.2 = update(lm4.1, ~. -new_EnzymeConc:Enzyme:CaStock-new_EnzymeConc:DetStock:CaStock)
@@ -113,12 +128,18 @@ lm4.5 = update(lm4.4, ~. -Enzyme:CaStock)
 drop1(lm4.5,test = 'F')
 Anova(lm4.5)
 
+summary(lm4.5)
 
 shapiro.test(lm4.5$residuals)
 
 bc = boxCox(lm4.5, lambda = seq(0,2,0.05))
 lambda= bc$x[ which.max(bc$y)]
 
-par(mfrow=c(2,2))
-plot(lm4.5)
+png("summery.png", units = "in", width = 10, height = 7, res = 300)
 
+
+par(mfrow=c(2,2))
+plot(lm4.5, col=as.numeric(data$Enzyme)+7, pch=19)
+dev.off()
+
+AIC(lm4,lm4.5)
