@@ -6,7 +6,7 @@ library(stringr)
 #load data
 #-------------------------------------
 
-load('Case2/WUndergroundHourly.RData')
+load('Case2/data/WUndergroundHourly.RData')
 
 # data clean
 #-------------------------------------
@@ -46,7 +46,7 @@ summary(WG_clean)
 str(WG_clean)
 
 #_______________________________________________
-# caculate per day
+# caculate value per day
 
 # make a function caculate mode of factor
 mode = function(x){
