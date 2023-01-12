@@ -2,46 +2,53 @@ source("Case2/scripts/plot_functions.R")
 library(tidyverse); library(car); library(ggpubr); library(ggrepel)
 
 ################################################################################
-### Data loading and wrangling
-################################################################################
-
-data <- read.csv("Case2/data/merged_data.csv")
-data$ID <- as.factor(data$ID)
-data$dir <- as.factor(data$dir)
-data$cond <- as.factor(data$cond)
-data$fog <- as.factor(data$fog)
-data$rain <- as.factor(data$rain)
-data$tempDiff <- 21 - data$temp
-data$weekday <-weekdays(as.Date(data$date))
-data$weekend <- as.factor((data$weekday == "Saturday" | data$weekday == "Sunday"))
-data$consumption <- data$consumption +0.00001
-
-summary(data)
-# outlier removal
-data <- data[-c(3357,3282),]
-
-################################################################################
 ### Plot tests
 ################################################################################
-scatter_plot <- function(n1, n2=NULL, data){
-  buildings <- sort(unique(data$ID))
-  if ()
-  sub_data <- data %>% 
-    filter(ID %in% buildings[1:2])
-}
 
-n2 <- NULL
+p1 <- scatter_plot(ran=c(81,83), label_ = "ID")
+p2 <- scatter_plot(ran=c(81,83), label_ = "ID", x_ = "wind_spd")
+ggarrange(p1,p2)
 
-sub_data %>% 
-  ggplot(mapping = aes(x = tempDiff,
-                       y = consumption,
-                       col = ID,
-                       label = date)) +
-  geom_point() +
-  theme_classic() +
-  geom_text_repel()
+scatter_plot(ran=c(65,75), col = "dir")
+
+cor(data$wind_spd, as.numeric(data$dir))
 
 
+################################################################################
+### Outliers
+################################################################################
 # Outliers (ID, date)
 # 4962433,  2018-12-09
 # 5140250,  2018-12-12
+# 
+
+# 65012411, 2018-10-30
+# 65012411, 2018-11-06
+# 65012411, 2018-11-08
+# 65012411, x
+
+# 65118755:
+# Seems like it has three different groupings/slopes --> gutebei!
+
+# 65118764:
+# similar to 65118755
+
+# 65118848
+# quite a few outliers
+
+# 65067046, 2018-11-14
+
+# 65118805
+# 6790785,  2018-11-20
+# 6790785,  2018-11-22
+# 6790798,  2018-11-13
+
+# 69652588
+# one group with no slope and another with a slope
+
+# 69749518
+# like 69652588
+
+# 7072241, 2018-09-23
+# 7072241, 2018-12-05
+# 7072241, 2018-12-07
