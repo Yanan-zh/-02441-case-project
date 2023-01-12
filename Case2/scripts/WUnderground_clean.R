@@ -1,4 +1,4 @@
-install.packages('rstatix')
+# install.packages('rstatix')
 library(rstatix)
 library(stringr)
 
@@ -104,36 +104,36 @@ WG_clean[WG_clean$day== '2018-11-12',]$cond
 
 plot(WG_clean[WG_clean$day== '2018-10-04',]$vis)
 
-
-vis_miss_day_ = WG_clean[WG_clean$day== '2018-11-10',][-16,]
-date.inter <- as.POSIXct("2018-12-23 23:00:00")
-inter.result <- approx(vis_miss_day_$date, vis_miss_day_$vis, xout = date.inter)
-
-WG_clean[is.na(WG_clean$vis),][,1]
-
-#plot(vis_miss_day_$vis~vis_miss_day_$date)
-#points(inter.result$x, inter.result$y, pch = 17)
-#legend("topleft", legend = c("data", "interpolated"), pch = c(1,17))
-
-vis_miss_day = WG_clean[is.na(WG_clean$vis),]
-
-
-for (i in c(1:length(vis_miss_day[,1]))){
-  vis_miss_day_w = WG_clean[WG_clean$day == vis_miss_day[i,16],]
-  vis_miss_day_n = na.omit(vis_miss_day_w)
-  date.inter <- as.POSIXct(vis_miss_day[i,1])
-  inter.result <- approx(vis_miss_day_n$date, vis_miss_day_n$vis, xout = date.inter)
-  print(inter.result$y)
-  }
-
-#########################################################
-
-
-
-
-
-
-
-
-
-
+# 
+# vis_miss_day_ = WG_clean[WG_clean$day== '2018-11-10',][-16,]
+# date.inter <- as.POSIXct("2018-12-23 23:00:00")
+# inter.result <- approx(vis_miss_day_$date, vis_miss_day_$vis, xout = date.inter)
+# 
+# WG_clean[is.na(WG_clean$vis),][,1]
+# 
+# #plot(vis_miss_day_$vis~vis_miss_day_$date)
+# #points(inter.result$x, inter.result$y, pch = 17)
+# #legend("topleft", legend = c("data", "interpolated"), pch = c(1,17))
+# 
+# vis_miss_day = WG_clean[is.na(WG_clean$vis),]
+# 
+# 
+# for (i in c(1:length(vis_miss_day[,1]))){
+#   vis_miss_day_w = WG_clean[WG_clean$day == vis_miss_day[i,16],]
+#   vis_miss_day_n = na.omit(vis_miss_day_w)
+#   date.inter <- as.POSIXct(vis_miss_day[i,1])
+#   inter.result <- approx(vis_miss_day_n$date, vis_miss_day_n$vis, xout = date.inter)
+#   print(inter.result$y)
+# }
+# 
+# #########################################################
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
