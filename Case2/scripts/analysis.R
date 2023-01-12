@@ -17,8 +17,6 @@ data$consumption <- data$consumption +0.00001
 
 summary(data)
 
-
-
 # fix dates ---------------------------------------------------------------
 
 uniqueDates <- unique(data$date)
@@ -58,6 +56,7 @@ par(mfrow=c(2,2))
 plot(model_wInter, col = data$weekend)
 
 
+# model with weekend ------------------------------------------------------
 
 par(mfrow=c(1,1))
 plot(data$consumption~data$tempDiff, col = data$weekend)
@@ -69,10 +68,34 @@ model_wWeekend <-lm(consumption~ weekend +ID+ tempDiff +ID:tempDiff + ID:weekend
 drop1(model_wWeekend, test = "F")
 
 par(mfrow=c(2,2))
-plot(model_wWeekend, col = data$weekend)
+plot(model_wWeekend, col = data$ID)
 
 
-# residual vairance depends on the id? plot to show it
-# maybe some buildings have systematic error
 
-#plot function for buildings
+# model with weather variables --------------------------------------------
+
+plot(data$consumption ~data$wind_spd, col = data$ID)
+
+model_wWind <- lm(consumption~ wind_spd +weekend +ID+ tempDiff +ID:tempDiff + ID:weekend + weekend:tempDiff +wind_spd:tempDiff+wind_spd:ID+wind_spd:weekend,data)
+drop1(model_wWind, test = "F")
+
+model_wWind <- update(model_wWind,. ~ . - wind_spd:weekend)
+drop1(model_wWind, test = "F")
+
+
+# add some wind direction based on some plots
+par(mfrow=c(1,1))
+plot(data$consumption ~data$wind_spd, col = data$dir)
+
+model_wDir <- update(model_wWind,. ~ . +dir)
+model_wDir <- update(model_wWind,. ~ . +dir:wind_spd)
+
+par(mfrow=c(2,2))
+plot(model_wDir)
+
+model_final <- lm(consumption~ wind_spd +weekend +ID+ tempDiff +ID:tempDiff + ID:weekend + weekend:tempDiff +wind_spd:tempDiff+wind_spd:ID+dir+dir:wind_spd,data)
+
+par(mfrow=c(2,2))
+plot(model_wDir)
+
+
