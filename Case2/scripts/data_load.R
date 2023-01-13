@@ -148,3 +148,6 @@ summary(merged_grp6)
 summary(merged_andreas)
 str(merged_grp6)
 str(merged_andreas)
+
+# Write csv file
+write_csv(merged_grp6, file = "Case2/data/merged_our_own.csv")

@@ -1,0 +1,93 @@
+ID,building_type,Anvendelse
+65118755,Apartment building,011  Beboelsesejendomme
+65118774,Apartment building,011  Beboelsesejendomme
+65118826,Apartment building,011  Beboelsesejendomme
+65067046,Other building,013  Andre ejendomme
+65118840,Other building,013  Andre ejendomme
+7072231,Other building,013  Andre ejendomme
+78138095,Other building,013  Andre ejendomme
+65120192,Vacant apartment,013a  Tomme ejendomme
+6681892,Vacant apartment,013a  Tomme ejendomme
+6842762,Vacant apartment,013a  Tomme ejendomme
+69001269,Vacant apartment,013a  Tomme ejendomme
+5326537,Stadium/sports centre,031  Stadion og idrætsanlæg
+78082613,Stadium/sports centre,031  Stadion og idrætsanlæg
+69478883,Sports centre/swimming pool,032  Idræts- og svømmehaller
+69518080,Sports centre/swimming pool,032  Idræts- og svømmehaller
+78185925,Sports centre/swimming pool,032  Idræts- og svømmehaller
+5325295,Operational building,205  Driftsbygninger
+69469107,Operational building,205  Driftsbygninger
+7183151,Operational building,205  Driftsbygninger
+4673057,School,301  Skoler
+4839509,School,301  Skoler
+4937678,School,301  Skoler
+6135206,School,301  Skoler
+6916431,School,301  Skoler
+69429582,School,301  Skoler
+69478882,School,301  Skoler
+69585544,School,301  Skoler
+69873820,School,301  Skoler
+6842421,After school care,305  Skolefritidsordninger
+69861514,After school care,305  Skolefritidsordninger
+69999051,After school care,305  Skolefritidsordninger
+6618580,Library,350  Biblioteker
+4585739,Other cultural tasks,364  Andre kulturelle opgaver
+6790798,Other cultural tasks,364  Andre kulturelle opgaver
+69250492,Other cultural tasks,364  Andre kulturelle opgaver
+69585545,Other cultural tasks,364  Andre kulturelle opgaver
+69999094,Other cultural tasks,364  Andre kulturelle opgaver
+6681894,Leisure activities,375  Fritidsaktiviteter
+69749518,Leisure activities,375  Fritidsaktiviteter
+4962433,Fitness gym,482 Træningscentre
+7072161,Health service,489 Sundhedstjeneste
+65118805,Day care,511  Dagpleje
+4529799,Day care,514  Integrerede daginstitutioner
+4529800,Day care,514  Integrerede daginstitutioner
+6392146,Day care,514  Integrerede daginstitutioner
+6392172,Day care,514  Integrerede daginstitutioner
+6393013,Day care,514  Integrerede daginstitutioner
+65005112,Day care,514  Integrerede daginstitutioner
+65012411,Day care,514  Integrerede daginstitutioner
+65014274,Day care,514  Integrerede daginstitutioner
+65063211,Day care,514  Integrerede daginstitutioner
+65063303,Day care,514  Integrerede daginstitutioner
+6567326,Day care,514  Integrerede daginstitutioner
+6627258,Day care,514  Integrerede daginstitutioner
+6790785,Day care,514  Integrerede daginstitutioner
+6790869,Day care,514  Integrerede daginstitutioner
+6842413,Day care,514  Integrerede daginstitutioner
+6842603,Day care,514  Integrerede daginstitutioner
+69001263,Day care,514  Integrerede daginstitutioner
+6940322,Day care,514  Integrerede daginstitutioner
+69652603,Day care,514  Integrerede daginstitutioner
+69688095,Day care,514  Integrerede daginstitutioner
+69861509,Day care,514  Integrerede daginstitutioner
+7072241,Day care,514  Integrerede daginstitutioner
+7072337,Day care,514  Integrerede daginstitutioner
+78443775,Day care,514  Integrerede daginstitutioner
+5093913,Day care PRIVATE,514a  Integrerede daginstitution PRIVATE
+65118764,Day care PRIVATE,514a  Integrerede daginstitution PRIVATE
+6681763,Day care PRIVATE,514a  Integrerede daginstitution PRIVATE
+6842629,Day care PRIVATE,514a  Integrerede daginstitution PRIVATE
+6393014,Youth centre,516  Fritids- og ungdomsklubber
+65052581,Youth centre,516  Fritids- og ungdomsklubber
+65118848,Youth centre,516  Fritids- og ungdomsklubber
+6940321,Youth centre,516  Fritids- og ungdomsklubber
+69611360,Youth centre,516  Fritids- og ungdomsklubber
+65063195,Preventive measures for children and adolescents,521  Foreb. foranst for børn og unge
+4747771,Special day care and centres,525 Særlige dagtilbud og særlige klubber
+6921678,Nursing home,530 Plejecentre
+69580701,Nursing home,530 Plejecentre
+69518092,Nursing home,533 Pleje og omsorg m.v. af ældre og handicappede
+65118812,Nursing home,534  Institutioner for ældre
+65014229,Medical equipment depot,535 Hjælpemiddeldepoter
+4866195,Long-term housing,550 Længerevarende botilbud
+4887707,Long-term housing,550 Længerevarende botilbud
+5037175,Long-term housing,550 Længerevarende botilbud
+5093998,Long-term housing,550 Længerevarende botilbud
+5140250,Long-term housing,550 Længerevarende botilbud
+65118829,Long-term housing,550 Længerevarende botilbud
+6627261,Long-term housing,550 Længerevarende botilbud
+69089222,Long-term housing,550 Længerevarende botilbud
+6392057,Activity and social centre,559  Aktivitets- og samværstilbud
+,,
