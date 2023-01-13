@@ -63,13 +63,13 @@ model_wWeekend <- update(model_wInter,. ~ . *weekend)
 
 # now we check to see if we should remove anything
 
-drop1(model_wWeekend, test = "F", k = log(length(data)))
+drop1(model_wWeekend, test = "F", k = log(nrow(data)))
 
 #so according to the BIC we remove ID:tempDiff:weekend
 
 model_wWeekend <- update(model_wWeekend,. ~ . -ID:tempDiff:weekend)
 
-drop1(model_wWeekend, test = "F", k = log(length(data)))
+drop1(model_wWeekend, test = "F", k = log(nrow(data)))
 
 # no more dropping! We check Anova
 
@@ -83,7 +83,7 @@ plot(model_wWeekend, col = data$ID)
 # model with weather variables --------------------------------------------
 
 
-# by brain power - cold wind probably means we use more energy to heat buildings?
+# by logic- cold wind probably means we use more energy to heat buildings?
 
 #make a better plot !!!
 par(mfrow=c(1,1))
@@ -93,26 +93,36 @@ plot(data$consumption ~data$wind_spd, col = data$ID)
 
 model_wWind <-update(model_wWeekend,. ~ . *wind_spd)
 
-drop1(model_wWind, test = "F", k = log(length(data)))
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
 # makes sense, ID:weekend:wind_spd is very important
 
 model_wWind <- update(model_wWind,. ~ . - ID:weekend:wind_spd)
 
-drop1(model_wWind, test = "F", k = log(length(data)))
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
 # remove ID:tempDiff:wind_spd
 
 model_wWind <- update(model_wWind,. ~ . - ID:tempDiff:wind_spd)
 
-drop1(model_wWind, test = "F", k = log(length(data)))
+drop1(model_wWind, test = "F", k = log(nrow(data)))
+
+# remove ID:wind_spd
+
+model_wWind <- update(model_wWind,. ~ . - ID:wind_spd)
+
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
 # remove tempDiff:weekend:wind_spd
-
 model_wWind <- update(model_wWind,. ~ . - tempDiff:weekend:wind_spd)
 
-drop1(model_wWind, test = "F", k = log(length(data)))
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
+
+# remove weekend:wind_spd
+model_wWind <- update(model_wWind,. ~ . -weekend:wind_spd)
+
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
 par(mfrow=c(1,2))
 plot(data$consumption ~data$wind_spd, col = data$dir)
@@ -123,19 +133,22 @@ plot(data$consumption ~data$tempDiff, col = data$dir)
 
 model_wWind <- update(model_wWind,. ~ . +dir + wind_spd:dir + wind_spd:dir:ID +wind_spd:dir:tempDiff)
 
-drop1(model_wWind, test = "F", k = log(length(data)))
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
 # based on this, remove ID:wind_spd:dir
 
 model_wWind <- update(model_wWind,. ~ . - ID:wind_spd:dir)
 
-drop1(model_wWind, test = "F", k = log(length(data)))
+drop1(model_wWind, test = "F", k = log(nrow(data)))
 
-#acording to this we do not want to remove anything else
+model_wWind <- update(model_wWind,. ~ . - tempDiff:weekend)
+
+drop1(model_wWind, test = "F", k = log(nrow(data)))
+
+#according to this we do not want to remove anything else
 
 par(mfrow=c(2,2))
 plot(model_wWind)
-
 
 #we do some analysis on the model
 Anova(model_wWind)
@@ -160,7 +173,7 @@ plot(model_wWind)
 # next thing that makes the most sense from the weather stuff is the humididity
 
 model_wHum <- update(model_wWind,. ~ . +hum)
-drop1(model_wHum, test = "F", k = log(length(data)))
+drop1(model_wHum, test = "F", k = log(nrow(data)))
 
 #according to the BIC, it makes sense to add ! we check for multicplinearity
 
@@ -169,20 +182,31 @@ Anova(model_wHum)
 # we try and add some interactions
 
 model_wHum <- update(model_wHum,. ~ . +hum:wind_spd +hum:ID)
-drop1(model_wHum, test = "F", k = log(length(data)))
+drop1(model_wHum, test = "F", k = log(nrow(data)))
+
+
+model_wHum <- update(model_wHum,. ~ . -ID:hum)
+drop1(model_wHum, test = "F", k = log(nrow(data)))
+
 
 # we keep these! maybe there are some buildings which have issues with windspeed and hum in certain buildings
 
 model_wHum <- update(model_wHum,. ~ . +hum:wind_spd:ID)
-drop1(model_wHum, test = "F", k = log(length(data)))
+drop1(model_wHum, test = "F", k = log(nrow(data)))
 
 # no 
 
+
 model_wHum <- update(model_wHum,. ~ . -hum:wind_spd:ID)
-drop1(model_wHum, test = "F", k = log(length(data)))
+drop1(model_wHum, test = "F", k = log(nrow(data)))
 
 
 
 # final model -------------------------------------------------------------
 
 final_model <- model_wHum
+
+par(mfrow=c(2,2))
+plot(final_model)
+
+#remove outliers?
