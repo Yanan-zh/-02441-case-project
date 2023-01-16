@@ -8,7 +8,12 @@ for (id in ids){
          dpi = 300, width = 2000, height = 1600, units = "px")
 }
 
-
+# Plot of all data points
+scat_plot(c(1,83), col_ = "ID") +
+  theme(legend.position = "none") +
+  ggtitle("Consumption versus temperature difference for different buildings")
+ggsave("Case2/figures/scat_all.png",
+       dpi = 300, width = 2000, height = 1200, units = "px")
 
 # Candidates for weekend correlation:
 # 6842421, after school care <- good
@@ -21,7 +26,7 @@ p1 <- scat_plot(c(6842421,
 ), col = "weekend", shape_ = "building_type") + 
   scale_colour_discrete("Weekend") +
   scale_shape("Building type") +
-  ggtitle("Consumption is lower during the weekend")
+  ggtitle("A")
 
 
 
@@ -34,13 +39,23 @@ p2 <- scat_plot(c(4887707
             ), col = "weekend", shape_ = "building_type") + 
   scale_colour_discrete("Weekend") +
   scale_shape("Building type") +
-  ggtitle("Consumption independent of weekend status")
+  ggtitle("B")
 
 p3 <- scat_plot(c(4962433
 ), col = "weekend", shape_ = "building_type") + 
   scale_colour_discrete("Weekend") +
   scale_shape("Building type") +
-  ggtitle("Consumption independent of weekend status")
+  ggtitle("C")
+
+
+
+# Candidates for three slopes
+# 65118755, apartment <- unknown trend
+# 65118764, day care private <- unknown trend
+p4 <- scat_plot(65118755, col_ = "date", shape_ = "building_type") +
+  scale_shape("Building type") +
+  ggtitle("D") +
+  guides(shape = guide_legend(order = -1))
 
 
 
@@ -48,30 +63,25 @@ p3 <- scat_plot(c(4962433
 # 6392172, day care <- dates: 10-25, 10-29, 11-15, 11-22, 11-27
 # 65118848, youth centre <- indoor tennis gym, dates = early dates
 
-p4 <- scat_plot(c(65118848),
-          col_ = "date", shape_ = "building_type") +
+tennis <- data
+tennis$building_type[tennis$ID == 65118848] = "Tennis court"
+p5 <- scat_plot(c(65118848),
+                data_ = tennis,
+                col_ = "date", shape_ = "building_type") +
   scale_shape("Building type") +
-  ggtitle("Blåkilde IF Tennis")
-
-
-
-# Candidates for three slopes
-# 65118755, apartment <- unknown trend
-# 65118764, day care private <- unknown trend
-p5 <- scat_plot(65118755, shape_ = "building_type", col_ = "date") +
-  scale_shape("Building type") +
-  ggtitle("Outlier patterns")
+  ggtitle("E")
 
 
 
 # Candidates for no correlation between consumption and temperature difference:
 # 69999051, after school care
-p6 <- scat_plot(69999051, shape_ = "building_type", col_ = "date") +
-  ggtitle("Date-dependent distributions")
+p6 <- scat_plot(69999051, col_ = "date", shape_ = "building_type") +
+  scale_shape("Building type") +
+  ggtitle("F")
 
 
 
-# Final plot
-ggarrange(p1,p2,p3,p5,p4,p6)
+# Plot of data trends
+ggarrange(p1,p2,p3,p4,p5,p6)
 ggsave(paste0("Case2/figures/scatter_weekend_6plts.png"),
        dpi = 300, width = 4000, height = 2400, units = "px")

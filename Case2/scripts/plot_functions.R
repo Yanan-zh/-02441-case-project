@@ -101,7 +101,9 @@ actual_plot_function <- function(sub_data_=data,
                                    label = {{label__}},
                                    shape = {{shape__}})) +
     geom_point() +
-    theme_classic()
+    theme_classic() +
+    guides(shape = guide_legend(order = 2),
+           label = guide_legend(order = 3))
   
   if (!(is.null(label__))){
     p <- p + geom_text_repel()
@@ -122,5 +124,13 @@ actual_plot_function <- function(sub_data_=data,
                                         "1/12",
                                         "28/12"))
   }
+  
+  if(x__ == "tempDiff"){
+    p <- p + labs(x = "Temperature difference")
+  }
+  if(y__ == "consumption"){
+    p <- p + labs(y = "Consumption")
+  }
+  
   p
 }
