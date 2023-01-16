@@ -34,6 +34,7 @@ plot(model_wInter)
 # we can see that there are some outliers, we don't like this
 
 data <- data[-c(3357,3282),]
+rownames(data) <- NULL  
 
 # remake the model
 
@@ -80,8 +81,18 @@ Anova(model_wWeekend)
 par(mfrow=c(2,2))
 plot(model_wWeekend, col = data$ID)
 
-# model with weather variables --------------------------------------------
+# remove some more data
 
+data <- data[-3438,]
+rownames(data) <- NULL 
+
+model_wWeekend<- lm(formula = consumption ~ ID + tempDiff + weekend + ID:tempDiff + 
+     ID:weekend + tempDiff:weekend, data = data)
+
+par(mfrow=c(2,2))
+plot(model_wWeekend, col = data$ID)
+
+# model with weather variables --------------------------------------------
 
 # by logic- cold wind probably means we use more energy to heat buildings?
 
@@ -128,6 +139,9 @@ par(mfrow=c(1,2))
 plot(data$consumption ~data$wind_spd, col = data$dir)
 plot(data$consumption ~data$tempDiff, col = data$dir)
 
+par(mfrow=c(2,2))
+plot(model_wWind, col = data$ID)
+
 
 #looks like we got some interaction?
 
@@ -150,10 +164,20 @@ drop1(model_wWind, test = "F", k = log(nrow(data)))
 par(mfrow=c(2,2))
 plot(model_wWind)
 
+data <- data[-c(2535),]
+rownames(data) <- NULL  
+
+model_wWind <- lm(formula = consumption ~ ID + tempDiff + weekend + wind_spd + 
+     dir + ID:tempDiff + ID:weekend + tempDiff:wind_spd + wind_spd:dir + 
+     tempDiff:wind_spd:dir, data = data)
+
+par(mfrow=c(2,2))
+plot(model_wWind)
+
 #we do some analysis on the model
 Anova(model_wWind)
 
-#shoes we have some multicolinearity, lets track that down 
+#shows we have some multicolinearity, lets track that down 
 alias(model_wWind)
 
 # we try and remove tempDiff:wind_spd:dir
@@ -201,12 +225,9 @@ model_wHum <- update(model_wHum,. ~ . -hum:wind_spd:ID)
 drop1(model_wHum, test = "F", k = log(nrow(data)))
 
 
-
 # final model -------------------------------------------------------------
 
 final_model <- model_wHum
 
 par(mfrow=c(2,2))
 plot(final_model)
-
-#remove outliers?
