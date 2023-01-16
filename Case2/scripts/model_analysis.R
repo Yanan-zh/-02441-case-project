@@ -1,3 +1,5 @@
+library("ggplot2")
+
 # make sure to have final_model from analysis
 
 summary(final_model)
@@ -88,4 +90,16 @@ est <- A%*%model_sum$coefficients[,1]
 
 var_est <-A%*%model_sum$cov.unscaled%*% t(A)*model_sum$sigma^2
 
-coef <-data.frame(Group=levels(data$ID), Slope = est, sd.error=sqrt(diag(var_est)))
+coef <-data.frame(ID=levels(data$ID), Slope = est, sd.error=sqrt(diag(var_est)))
+
+t_stat <- qt(0.975,df=118-1)
+  
+coef$upper <- coef$Slope  + t_stat*coef$sd.error/sqrt(118)
+coef$lower <- coef$Slope  - t_stat*coef$sd.error/sqrt(118)
+
+# sort by slope
+
+ggplot(coef[0:10,], aes(x = reorder(ID, -Slope), y=Slope))+ 
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=lower, ymax=upper))
+›
