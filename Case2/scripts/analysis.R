@@ -208,4 +208,5 @@ final_model <- model_wHum
 par(mfrow=c(2,2))
 plot(final_model, col = data$rain)
 
+drop1(final_model, test = "F", k = log(nrow(data)))
 

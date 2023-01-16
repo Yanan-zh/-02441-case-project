@@ -38,11 +38,19 @@ A_5 <- matrix(0,83,1)
 
 # for interaction id:tempDIFF
 
-A_6 <- diag(83)
+A_6_top <-matrix(0,1,82)
+
+A_6_bot <-matrix(diag(82),82,82)
+
+A_6 <- rbind(A_6_top,A_6_bot)
 
 # for weekend interaction
 
-A_7 <- diag(83)
+A_7_top <-matrix(0,1,82)
+
+A_7_bot <-matrix(diag(82),82,82)
+
+A_7 <- rbind(A_7_top,A_7_bot)
 
 # for non id interactions weekend:windspeed, tempDiff:wind, tempDiff:weekend
 
