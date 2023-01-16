@@ -1,12 +1,11 @@
 source("Case2/scripts/plot_functions.R")
-library(RColorBrewer)
 
 # Create single plots for all IDs
-for (id in ids){
-  scat_plot(id, col = "weekend", shape_ = "building_type", label_ = "date")
-  ggsave(paste0("Case2/figures/explorative_plots/", id, "_scatter_weekend.png"),
-         dpi = 300, width = 2000, height = 1600, units = "px")
-}
+# for (id in ids){
+#   scat_plot(id, col = "weekend", shape_ = "building_type")
+#   ggsave(paste0("Case2/figures/explorative_plots/", id, "_scatter_weekend.png"),
+#          dpi = 300, width = 2000, height = 1600, units = "px")
+# }
 
 # Plot of all data points
 scat_plot(c(1,83), col_ = "ID") +
@@ -85,3 +84,41 @@ p6 <- scat_plot(69999051, col_ = "date", shape_ = "building_type") +
 ggarrange(p1,p2,p3,p4,p5,p6)
 ggsave(paste0("Case2/figures/scatter_weekend_6plts.png"),
        dpi = 300, width = 4000, height = 2400, units = "px")
+
+
+
+# Plot different variables
+str(data)
+data %>% 
+  ggplot(mapping = aes(x = weekend,
+                       y = consumption,
+                       fill = weekday)) +
+  geom_boxplot()
+
+  
+  
+scat_plot(c(1,83),
+          col_ = "dew_pt")
+scat_plot(c(1,83),
+          y_ = "dew_pt")
+
+
+scat_plot(c(1,83),
+          x_ = "wind_spd",
+          col_ = "vis")
+str(data)
+
+pairs(data[,c(1,3,14,5)])
+# find a good way to show as many variables as possible
+# and create boxplots for a few
+str(data)
+
+str(data)
+data %>% 
+  ggplot(mapping = aes(x = tempDiff,
+                       y = consumption)) +
+  geom_point() +
+  geom_smooth()
+
+
+?geom_smooth

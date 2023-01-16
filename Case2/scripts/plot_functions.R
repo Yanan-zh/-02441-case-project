@@ -1,5 +1,5 @@
 library(tidyverse); library(car); library(ggpubr); library(ggrepel);
-library(rlang); library(data.table)
+library(rlang); library(data.table); library(RColorBrewer)
 
 ################################################################################
 ### Data loading and wrangling
@@ -12,13 +12,19 @@ data$cond <- as.factor(data$cond)
 data$fog <- as.factor(data$fog)
 data$rain <- as.factor(data$rain)
 data$tempDiff <- 21 - data$temp
-data$weekday <-weekdays(as.Date(data$date))
+data$weekday <-weekdays(as.Date(data$date)); data$weekday = as.factor(data$weekday)
 data$weekend <- as.factor((data$weekday == "Saturday" | data$weekday == "Sunday"))
 data$consumption <- data$consumption +0.00001
+data$date = as.IDate(data$date)
 
 summary(data)
 # outlier removal
 data <- data[-c(3357,3282),]
+rownames(data) <- NULL  
+data <- data[-3438,]
+rownames(data) <- NULL 
+data <- data[-c(2535),]
+rownames(data) <- NULL  
 
 # Read the meta df
 meta <- fread("Case2/data/metadata.csv") %>% 
@@ -28,7 +34,7 @@ meta <- fread("Case2/data/metadata.csv") %>%
 # Merge dataframes and handle NAs
 data <- left_join(data, meta, by = "ID") %>% 
   mutate(building_type = replace_na(building_type, "Unknown building type"))
-
+data$building_type = as.factor(data$building_type)
 
 ################################################################################
 ### Functions
