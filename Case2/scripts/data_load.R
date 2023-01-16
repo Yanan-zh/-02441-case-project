@@ -1,4 +1,5 @@
 library(tidyverse); library(car); library(ggpubr); library(data.table)
+library(xtable)
 
 ################################################################################
 ### Data loading and cleansing
@@ -11,8 +12,10 @@ meter <- data.frame(matrix(nrow = 0, ncol = length(columns)))
 
 # Read meter files into data frame
 files <- list.files("Case2/data/meterdata/")
+readings <- c()
 for (filename in files){
   file <- fread(paste0("Case2/data/meterdata/", filename))
+  readings <- c(readings, dim(file)[1])
   file <- file %>% 
     select(V1, V2, V4)
   meter <- rbind(meter,file)
@@ -144,10 +147,17 @@ merged_grp6 <- inner_join(meter_clean, WU_data, by = "date") %>%
   select(date, everything())
 merged_andreas <- fread("Case2/data/merged_data.csv")
 
+# Summary of data frames
 summary(merged_grp6)
 summary(merged_andreas)
 str(merged_grp6)
 str(merged_andreas)
+xtable(summary(merged_grp6[,1:6]))
+xtable(summary(merged_grp6[,7:13]))
+xtable(summary(merged_grp6[,9:13]))
+summary(data)
+xtable(summary(merged_andreas))
+xtable(summary(data))
 
 # Write csv file
-write_csv(merged_grp6, file = "Case2/data/merged_our_own.csv")
+# write_csv(merged_grp6, file = "Case2/data/merged_our_own.csv")
