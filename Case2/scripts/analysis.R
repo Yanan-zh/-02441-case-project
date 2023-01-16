@@ -13,7 +13,13 @@ data$rain <- as.factor(data$rain)
 data$tempDiff <- 21 - data$temp
 data$weekday <-weekdays(as.Date(data$date))
 data$weekend <- as.factor((data$weekday == "Saturday" | data$weekday == "Sunday"))
-data$consumption <- data$consumption +0.00001
+
+for(i in unique(data$ID)){
+  mean <- mean(data[data$ID ==i,]$consumption)
+  
+  data[data$ID ==i,]$consumption <- data[data$ID ==i,]$consumption/mean
+}
+  
 
 # initial model -----------------------------------------------------
 
@@ -33,7 +39,7 @@ plot(model_wInter)
 
 # we can see that there are some outliers, we don't like this
 
-data <- data[-c(3357,3282),]
+data <- data[-c(3357),]
 rownames(data) <- NULL  
 
 # remake the model
@@ -81,10 +87,6 @@ Anova(model_wWeekend)
 par(mfrow=c(2,2))
 plot(model_wWeekend, col = data$ID)
 
-# remove some more data
-
-data <- data[-3438,]
-rownames(data) <- NULL 
 
 model_wWeekend<- lm(formula = consumption ~ ID + tempDiff + weekend + ID:tempDiff + 
      ID:weekend + tempDiff:weekend, data = data)
@@ -130,17 +132,10 @@ model_wWind <- update(model_wWind,. ~ . - tempDiff:weekend:wind_spd)
 drop1(model_wWind, test = "F", k = log(nrow(data)))
 
 
-# remove weekend:wind_spd
-model_wWind <- update(model_wWind,. ~ . -weekend:wind_spd)
 
-drop1(model_wWind, test = "F", k = log(nrow(data)))
-
-par(mfrow=c(1,2))
-plot(data$consumption ~data$wind_spd, col = data$dir)
-plot(data$consumption ~data$tempDiff, col = data$dir)
 
 par(mfrow=c(2,2))
-plot(model_wWind, col = data$ID)
+plot(model_wWind, col = data$date)
 
 
 #looks like we got some interaction?
@@ -149,30 +144,11 @@ model_wWind <- update(model_wWind,. ~ . +dir + wind_spd:dir + wind_spd:dir:ID +w
 
 drop1(model_wWind, test = "F", k = log(nrow(data)))
 
-# based on this, remove ID:wind_spd:dir
-
-model_wWind <- update(model_wWind,. ~ . - ID:wind_spd:dir)
-
-drop1(model_wWind, test = "F", k = log(nrow(data)))
-
-model_wWind <- update(model_wWind,. ~ . - tempDiff:weekend)
-
-drop1(model_wWind, test = "F", k = log(nrow(data)))
-
 #according to this we do not want to remove anything else
 
 par(mfrow=c(2,2))
 plot(model_wWind)
 
-data <- data[-c(2535),]
-rownames(data) <- NULL  
-
-model_wWind <- lm(formula = consumption ~ ID + tempDiff + weekend + wind_spd + 
-     dir + ID:tempDiff + ID:weekend + tempDiff:wind_spd + wind_spd:dir + 
-     tempDiff:wind_spd:dir, data = data)
-
-par(mfrow=c(2,2))
-plot(model_wWind)
 
 #we do some analysis on the model
 Anova(model_wWind)
@@ -230,4 +206,6 @@ drop1(model_wHum, test = "F", k = log(nrow(data)))
 final_model <- model_wHum
 
 par(mfrow=c(2,2))
-plot(final_model)
+plot(final_model, col = data$rain)
+
+
