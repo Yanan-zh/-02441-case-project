@@ -1,0 +1,147 @@
+---
+title: "Vital capacity - with addon"
+author: "Lasse Engbo Christiansen"
+date: "15 jan 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, global.par = TRUE)
+```
+
+# Vital capacity
+Vital capacity for workers in cadmium factory
+three groups of workers (+10 , 0-10 and 0 years 
+ of work at the factory)
+
+
+```{r}
+# You might have to install this package
+library(ISwR)
+
+# Load data
+vit <- vitcap2
+summary(vit)
+str(vit)
+
+# Make group a factor
+vit$group <- factor(vit$group, labels = c("+10","0-10","Not"))
+summary(vit)
+
+```
+
+
+
+
+### Plotting the data
+```{r}
+pairs(vit, panel = panel.smooth, col = vit$group)
+par(mfrow = c(1,2), mar=c(3,3,2,1), mgp=c(2, 0.7,0))
+boxplot(vital.capacity ~ group, vit, ylab = "vital capacity")
+boxplot(age ~ group, vit, ylab = "age")
+
+```
+
+
+### Visualize potential interaction between group and age
+```{r}
+coplot(vital.capacity ~ age | group, vit, panel = panel.smooth)
+```
+
+
+### ANCOVA including interaction between group and age
+```{r}
+lm1 <- lm(vital.capacity ~ group*age, vit)
+par(mfrow = c(2,2))
+plot(lm1)
+# Assumtions are not rejected
+drop1(lm1, test = "F")
+```
+
+The interaction is significant so the model should not be reduced.
+
+### Interpret results
+Summary as raw R-output
+```{r}
+summary(lm1)
+```
+
+But it could also be in table
+```{r, echo = FALSE}
+library(kableExtra, quietly = TRUE)
+lm1s <- summary(lm1)
+kable_styling( kable(lm1s$coefficients, digits = c(4,4,3,3)), full_width = FALSE, bootstrap_options = c("striped", "hover"))
+```
+
+Read (https://haozhu233.github.io/kableExtra/awesome_table_in_html.html) if you want to see more examples on how to format tables for Markdown and HTML from R.
+
+
+### Plot results 
+Graphical interpretation is nicer :)
+
+First the simple
+```{r}
+par(mfrow = c(1,1))
+plot(vital.capacity ~ age, vit, pch = 19, col = vit$group, xlim = c(0,65), ylim = c(2.5,8.2))
+legend("topright", legend = c("+10","0-10","Not"), pch = 19, col = 1:3)
+co <- coef(lm1)
+abline(a = co[1], b = co[4], lwd = 3)
+abline(a = co[1]+co[2], b = co[4]+co[5], lwd = 3, col = 2)
+abline(a = co[1]+co[3], b = co[4]+co[6], lwd = 3, col = 3)
+```
+
+But some mearsure of uncertainty should be added. So redoing with 95% confidence intervals
+```{r}
+new.data <- data.frame("group" = rep(c("+10","0-10","Not"), each = 100),
+                      "age" = seq(0,max(vit$age), length = 100))
+conf.int <- predict(lm1, new.data, interval = "confidence")
+
+plot(vital.capacity ~ age, vit, pch = 19, col = vit$group, xlim = c(0,65), ylim = c(2.5,8.2))
+legend("topright", legend = c("+10","0-10","Not"), pch = 19, col = 1:3)
+
+matlines(new.data$age[new.data$group=="+10"], conf.int[new.data$group=="+10",],
+         lty = c(1,3,3), lw = c(3,1,1), col = 1)
+matlines(new.data$age[new.data$group=="0-10"], conf.int[new.data$group=="0-10",],
+         lty = c(1,3,3), lw = c(3,1,1), col = 2)
+matlines(new.data$age[new.data$group=="Not"], conf.int[new.data$group=="Not",],
+         lty = c(1,3,3), lw = c(3,1,1), col = 3)
+```
+
+### Addon: Uncertainty on combinations of parameters
+When a factor is involved the parameters associated with the factor, e.g. 'group' are describing how these levels are different from the reference level. And the Std. error that is associated is also for that difference. We cannot just square the relevant standard errors and add them as the parameters are most likely correlated. In the particular case the correlation matrix for the estimated parameters is:
+
+```{r}
+lm1s <- summary(lm1, correlation = TRUE)
+kable_styling( kable(lm1s$correlation, digits = 3), full_width = FALSE, bootstrap_options = c("striped", "hover"))
+```
+
+In the particular case the correlations are quite large. If we want to calculate the individual intercepts and their standard deviation then we should just recap the theory.
+
+Let us define the vector of estimated parameters as $\hat \theta$ with $V[\hat \theta] = \Sigma_{\theta}$. Given a matrix $A$ then the variance of $A \hat \theta$ is 
+$$ V[A \hat \theta] = A V[ \hat \theta] A^T = A \Sigma_{\theta} A^T$$
+In the particular case where we want the three intercepts $A$ should be:
+$$ A= \left[\begin{array}{cccccc} 1 & 0& 0& 0& 0& 0\\
+1& 1& 0& 0& 0& 0\\ 1& 0& 1& 0& 0& 0 \end{array}\right]$$
+Leading to the following estimates of the individual intercepts
+```{r}
+A <- cbind(diag(3),0,0,0)
+A[,1] <- 1
+est <- A %*% lm1s$coefficients[,1]
+var_est <- A %*% lm1s$cov.unscaled %*% t(A) * lm1s$sigma^2
+coef <- data.frame(Group=levels(vit$group), Intercept = est, sd.error=sqrt(diag(var_est)))
+kable_styling(kable(coef, digits = 3), full_width = FALSE, bootstrap_options = c("striped", "hover"))
+```
+
+Similarly for the slopes
+```{r, echo = TRUE}
+A <- cbind(0,0,0,diag(3))
+A[,4] <- 1
+est <- A %*% lm1s$coefficients[,1]
+var_est <- A %*% lm1s$cov.unscaled %*% t(A) * lm1s$sigma^2
+coef <- data.frame(Group=levels(vit$group), Slope = est, sd.error=sqrt(diag(var_est)))
+kable_styling(kable(coef, digits = 4), full_width = FALSE, bootstrap_options = c("striped", "hover"))
+```
+
+It is noticed that the uncertainty is highest in the group with those that worked in the cadmium industry for 10+ years. There are two reasons for that: It is the group with the fewest observations (12 vs 28 and 44) and the span of the ages is the smallest.
