@@ -244,4 +244,8 @@ plot(final_model)
 
 drop1(final_model, test = "F", k = log(nrow(data)))
 
+final_model <- update(final_model,. ~ . +rain)
+drop1(final_model, test = "F", k = log(nrow(data)))
+
+final_model <- update(final_model,. ~ . -rain)
 
