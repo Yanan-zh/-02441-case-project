@@ -206,7 +206,41 @@ drop1(model_wHum, test = "F", k = log(nrow(data)))
 final_model <- model_wHum
 
 par(mfrow=c(2,2))
-plot(final_model, col = data$rain)
+plot(final_model)
+
+data <- data[-c(8666,8926,7811),]
+rownames(data) <- NULL  
+final_model <-lm(formula = consumption ~ ID + tempDiff + weekend + wind_spd + 
+                   dir + hum + ID:tempDiff + ID:weekend + tempDiff:weekend + 
+                   tempDiff:wind_spd + weekend:wind_spd + wind_spd:dir + wind_spd:hum, 
+                 data = data)
+
+par(mfrow=c(2,2))
+plot(final_model)
+
+
+data <- data[-c(3357,8665,8924),]
+rownames(data) <- NULL
+
+final_model <-lm(formula = consumption ~ ID + tempDiff + weekend + wind_spd + 
+                   dir + hum + ID:tempDiff + ID:weekend + tempDiff:weekend + 
+                   tempDiff:wind_spd + weekend:wind_spd + wind_spd:dir + wind_spd:hum, 
+                 data = data)
+
+par(mfrow=c(2,2))
+plot(final_model)
+
+data <- data[-c(3282,7310,7810),]
+rownames(data) <- NULL
+
+final_model <-lm(formula = consumption ~ ID + tempDiff + weekend + wind_spd + 
+                   dir + hum + ID:tempDiff + ID:weekend + tempDiff:weekend + 
+                   tempDiff:wind_spd + weekend:wind_spd + wind_spd:dir + wind_spd:hum, 
+                 data = data)
+
+par(mfrow=c(2,2))
+plot(final_model)
+
 
 drop1(final_model, test = "F", k = log(nrow(data)))
 

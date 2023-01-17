@@ -91,15 +91,26 @@ est <- A%*%model_sum$coefficients[,1]
 var_est <-A%*%model_sum$cov.unscaled%*% t(A)*model_sum$sigma^2
 
 coef <-data.frame(ID=levels(data$ID), Slope = est, sd.error=sqrt(diag(var_est)))
-
-t_stat <- qt(0.975,df=118-1)
   
-coef$upper <- coef$Slope  + t_stat*coef$sd.error/sqrt(118)
-coef$lower <- coef$Slope  - t_stat*coef$sd.error/sqrt(118)
+n <- c()
+
+for(id in coef$ID){
+  print(nrow(data[data$ID==id,]))
+  n <-append(n,nrow(data[data$ID==id,]))
+}
+  
+coef$n <- n
+
+
+coef$upper <- coef$Slope  +  qt(0.975,df=coef$n-1)*coef$sd.error/sqrt(coef$n)
+coef$lower <- coef$Slope  -  qt(0.975,df=coef$n-1)*coef$sd.error/sqrt(coef$n)
 
 # sort by slope
 
-ggplot(coef[0:10,], aes(x = reorder(ID, -Slope), y=Slope))+ 
-  geom_bar(position=position_dodge(), stat="identity") +
-  geom_errorbar(aes(ymin=lower, ymax=upper))
-›
+top10 <- ggplot(coef[0:10,], aes(x = reorder(ID, -Slope), y=Slope))+ 
+  geom_bar(position=position_dodge(), stat="identity", col = "black", fill = "#F8766D") +
+  geom_errorbar(aes(ymin=lower, ymax=upper)) + xlab("Building IDs") + ylab("Slope") +
+  theme_classic(base_size = 13)
+
+
+ggsave("Case2/figures/top10_bar.pdf", top10)
