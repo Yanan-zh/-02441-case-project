@@ -1,4 +1,5 @@
 library("ggplot2")
+library("tidyverse")
 
 # make sure to have final_model from analysis
 
@@ -95,11 +96,11 @@ for(id in coef$ID){
   n <-append(n,nrow(data[data$ID==id,]))
 }
   
-coef$n <- n
+coef$n <- 
 
 
-coef$upper <- coef$Slope  +  qt(0.975,df=coef$n-83)*coef$sd.error
-coef$lower <- coef$Slope  -  qt(0.975,df=coef$n-83)*coef$sd.error
+coef$upper <- coef$Slope  +  qt(0.975,df=9785-285)*coef$sd.error
+coef$lower <- coef$Slope  -  qt(0.975,df=9785-285)*coef$sd.error
 
 
 # visualization -----------------------------------------------------------
