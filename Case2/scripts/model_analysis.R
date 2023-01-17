@@ -142,7 +142,15 @@ ggplot(top_building[0:10,], aes(x = reorder(ID, -Slope), y=Slope, fill = buildin
 
 dev.off()
 
+# visialization
+png("slopeAll.png", units = "in", width = 10, height = 7, res = 300)
+ggplot(top_building, aes(x = reorder(ID, -Slope), y=Slope, fill = "#F8766D"))+ 
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=lower, ymax=upper)) + xlab("Building IDs") + ylab("Slope") +
+  theme_classic(base_size = 13)+
+  theme(legend.position = "none",axis.text.x=element_blank(),axis.ticks.x=element_blank())
 
+dev.off()
 
 
 
