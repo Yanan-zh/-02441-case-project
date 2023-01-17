@@ -18,13 +18,13 @@ data$consumption <- data$consumption +0.00001
 data$date = as.IDate(data$date)
 
 summary(data)
-# outlier removal
-data <- data[-c(3357,3282),]
-rownames(data) <- NULL  
-data <- data[-3438,]
-rownames(data) <- NULL 
-data <- data[-c(2535),]
-rownames(data) <- NULL  
+# outlier removal <- don't do that yet.
+# data <- data[-c(3357,3282),]
+# rownames(data) <- NULL  
+# data <- data[-3438,]
+# rownames(data) <- NULL 
+# data <- data[-c(2535),]
+# rownames(data) <- NULL  
 
 # Read the meta df
 meta <- fread("Case2/data/metadata.csv") %>% 
