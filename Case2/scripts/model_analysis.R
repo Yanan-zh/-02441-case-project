@@ -105,8 +105,6 @@ coef$lower <- coef$Slope  -  qt(0.975,df=coef$n-83)*coef$sd.error
 # visualization -----------------------------------------------------------
 
 
-
-
 # sort by slope
 
 top10 <- ggplot(coef[0:10,], aes(x = reorder(ID, -Slope), y=Slope))+ 
@@ -118,3 +116,33 @@ top10 <- ggplot(coef[0:10,], aes(x = reorder(ID, -Slope), y=Slope))+
 
 
 ggsave("Case2/figures/top10_bar.pdf", top10)
+
+
+
+# yanan's---------------------------
+# load metadata
+metadata <- read.csv("Case2/data/metadata.csv")[-92,]
+metadata$ID = as.character(metadata$ID)
+
+#sort
+coef_sort <- coef[order(-coef$Slope),]
+
+# merge
+top_building = left_join(coef_sort,metadata,by = 'ID')
+
+
+# visialization
+png("slope.png", units = "in", width = 10, height = 7, res = 300)
+ggplot(top_building[0:10,], aes(x = reorder(ID, -Slope), y=Slope, fill = building_type))+ 
+  geom_bar(position=position_dodge(), stat="identity") +
+  geom_errorbar(aes(ymin=lower, ymax=upper)) + xlab("Building IDs") + ylab("Slope") +
+  theme_classic(base_size = 13)+
+  theme(legend.position = "bottom")
+
+dev.off()
+
+
+
+
+
+
