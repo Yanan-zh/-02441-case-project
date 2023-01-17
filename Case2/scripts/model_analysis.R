@@ -12,10 +12,6 @@ glm(final_model)
 
 # conf int ----------------------------------------------------------------
 
-# we make a 83 by 285
-
-
-
 #frist 83
 
 A_1 <- matrix(0,83,83)
@@ -53,30 +49,30 @@ A_6 <- rbind(A_6_top,A_6_bot)
 
 # 184
 
-# for weekend interaction
+# for ID:weekend interaction -> should be zeros
 
-A_7_top <-matrix(0,1,82)
-
-A_7_bot <-matrix(diag(82),82,82)
-
-A_7 <- rbind(A_7_top,A_7_bot)
+A_7 <-matrix(0,83,82)
 
 # 266
 
-# for non id interactions weekend:windspeed, tempDiff:windspeed
+# for non id interactions weekend:windspeed, tempDiff:windspeed -> mean(wind_spd)
 
-A_8 <- matrix(0,83,3)
+A_8 <- matrix(0,83,1)
+
+A_9 <- matrix(mean(data$wind_spd),83,1)
+
+A_10 <- matrix(0,83,1)
 
 # 269 
 
 # for dir:wind 
 
-A_9 <- matrix(0,83,15)
+A_11 <- matrix(0,83,15)
 
 # 284
 #for windspd:hum
 
-A_10 <- matrix(0,83,1)
+A_12 <- matrix(0,83,1)
 
 #285
 
@@ -84,7 +80,7 @@ A_10 <- matrix(0,83,1)
 
 model_sum <- summary(final_model,correlation = TRUE)
 
-A <- cbind(A_1,A_2,A_3,A_4,A_5,A_6,A_7,A_8,A_9,A_10)
+A <- cbind(A_1,A_2,A_3,A_4,A_5,A_6,A_7,A_8,A_9,A_10,A_11,A_12)
 
 est <- A%*%model_sum$coefficients[,1]
 
@@ -102,8 +98,14 @@ for(id in coef$ID){
 coef$n <- n
 
 
-coef$upper <- coef$Slope  +  qt(0.975,df=coef$n-1)*coef$sd.error/sqrt(coef$n)
-coef$lower <- coef$Slope  -  qt(0.975,df=coef$n-1)*coef$sd.error/sqrt(coef$n)
+coef$upper <- coef$Slope  +  qt(0.975,df=coef$n-83)*coef$sd.error
+coef$lower <- coef$Slope  -  qt(0.975,df=coef$n-83)*coef$sd.error
+
+
+# visualization -----------------------------------------------------------
+
+
+
 
 # sort by slope
 
@@ -111,6 +113,8 @@ top10 <- ggplot(coef[0:10,], aes(x = reorder(ID, -Slope), y=Slope))+
   geom_bar(position=position_dodge(), stat="identity", col = "black", fill = "#F8766D") +
   geom_errorbar(aes(ymin=lower, ymax=upper)) + xlab("Building IDs") + ylab("Slope") +
   theme_classic(base_size = 13)
+
+
 
 
 ggsave("Case2/figures/top10_bar.pdf", top10)
